@@ -46,6 +46,9 @@ pub struct Cli {
     /// Clockwise rotation of monitor in degrees. Valid values are 0, 90, 180 and 270. Defaults to current value.
     #[clap(short = 'R', long)]
     pub rotation: Option<u32>,
+
+    #[clap(short, long)]
+    pub fixmyshit: bool,
 }
 
 impl Cli {

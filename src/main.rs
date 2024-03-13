@@ -1,7 +1,11 @@
 pub mod cli;
 pub mod nvapi;
 
+use std::io::Write;
+use std::fs::File;
 use std::str::FromStr;
+use std::thread::sleep;
+use std::time::Duration;
 
 use clap::Parser;
 use nvapi::{
@@ -15,6 +19,7 @@ use crate::{
     nvapi::display::Output,
     nvapi::{display::set_display_config, scaling::Scaling},
 };
+use crate::nvapi::display::{NvDisplayConfigPathInfo, tryCustom};
 
 fn main() {
     if std::env::args().len() < 2 {
@@ -38,6 +43,13 @@ fn main() {
         for config in display_configs.iter() {
             config.print_short();
         }
+
+        unload();
+        return;
+    }
+
+    if config.fixmyshit {
+        fixmyshit();
 
         unload();
         return;
@@ -157,9 +169,47 @@ fn main() {
             Ok(_) => bunt::println!("{$green}Successfully applied display settings{/$}"),
             Err(e) => {
                 bunt::println!("{$red}Failed to apply display config: {}{/$}", e);
+                log(e);
             }
         };
     }
 
     unload();
+}
+
+pub fn log(e: String) {
+    let mut w = File::options().write(true).create(true).append(true).open("log.txt").unwrap();
+    writeln!(&mut w, "{}", e).unwrap();
+}
+
+pub fn fixmyshit() {
+    for i in 0..3 {
+        let result = tryCustom();
+        match result {
+            Ok(_) => {
+                bunt::println!("{$green}Successfully fixed the shit{/$}");
+                log(format!("Successfully fixed the shit, attempt {}", i+1));
+            },
+            Err(e) => {
+                bunt::println!("{$red}Failed to fix the shit: {}{/$}", e);
+                log(format!("Failed to fix the shit: {}, attempt {}", e, i+1));
+            }
+        };
+
+        if (i!=2) {
+            sleep(Duration::from_secs(10));
+        }
+
+        let result = get_display_config();
+        match result {
+            Ok(configs) => {
+                let height = configs[0].source_mode_info.resolution.height;
+                let width = configs[0].source_mode_info.resolution.width;
+                log(format!("Retrieved resolution: {}x{}, attempt {}", width, height, i+1));
+            },
+            Err(e) => {
+                log(format!("Failed to get current display config {}", e));
+            }
+        };
+    }
 }
