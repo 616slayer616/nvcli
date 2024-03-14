@@ -184,7 +184,7 @@ impl From<NV_DISPLAYCONFIG_PATH_INFO> for NvDisplayConfigPathInfo {
     }
 }
 
-pub fn tryCustom(displayId: NvU32) -> Result<()> {
+pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
 
     let mut timingInput = NV_TIMING_INPUT {
         version: make_nvapi_version::<NV_TIMING_INPUT>(1),
