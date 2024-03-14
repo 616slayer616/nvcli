@@ -49,7 +49,7 @@ fn main() {
     }
 
     if config.fixmyshit {
-        fixmyshit();
+        fixmyshit(display_configs);
 
         unload();
         return;
@@ -182,9 +182,17 @@ pub fn log(e: String) {
     writeln!(&mut w, "{}", e).unwrap();
 }
 
-pub fn fixmyshit() {
+pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
+    let displayId = displayConfigsBefore[0].target_info[0].display_id;
+    let heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
+
+    if (heightBefore == 1080) {
+        bunt::println!("{$green}Nothing to fix{/$}");
+        log("Nothing to fix".to_string());
+    }
+
     for i in 0..3 {
-        let result = tryCustom();
+        let result = tryCustom(displayId);
         match result {
             Ok(_) => {
                 bunt::println!("{$green}Successfully fixed the shit{/$}");
@@ -200,8 +208,8 @@ pub fn fixmyshit() {
             sleep(Duration::from_secs(10));
         }
 
-        let result = get_display_config();
-        match result {
+        let displayConfigs = get_display_config();
+        match displayConfigs {
             Ok(configs) => {
                 let height = configs[0].source_mode_info.resolution.height;
                 let width = configs[0].source_mode_info.resolution.width;
