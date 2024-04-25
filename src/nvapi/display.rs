@@ -185,7 +185,6 @@ impl From<NV_DISPLAYCONFIG_PATH_INFO> for NvDisplayConfigPathInfo {
 }
 
 pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
-
     let mut timingInput = NV_TIMING_INPUT {
         version: make_nvapi_version::<NV_TIMING_INPUT>(1),
         width: 640,
@@ -199,10 +198,30 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
     unsafe {
         let result = NvAPI_DISP_GetTiming(displayId, addr_of_mut!(timingInput), addr_of_mut!(newTiming));
         if result != _NvAPI_Status_NVAPI_OK {
-            return Err(format!("{} {}", "Error retrieving timing", get_status_message(&result)))
+            return Err(format!("{} {}", "Error retrieving timing", get_status_message(&result)));
         }
     }
+
+    newTiming.HVisible =2560;
+    newTiming.HBorder =0;
+    newTiming.HFrontPorch =64;
+    newTiming.HSyncWidth =16;
+    newTiming.HTotal =2720;
+    newTiming.HSyncPol =0;
+    newTiming.VVisible =1440;
+    newTiming.VBorder =0;
+    newTiming.VFrontPorch =33;
+    newTiming.VSyncWidth =8;
+    newTiming.VTotal =1487;
+    newTiming.VSyncPol =1;
+    newTiming.interlaced =0;
+    newTiming.pclk =96974;
+    newTiming.etc.flag = 1048576;
     newTiming.etc.rr = 240;
+    newTiming.etc.rrx1k = 239761;
+    newTiming.etc.aspect = 65537;
+    newTiming.etc.rep = 1;
+    newTiming.etc.status = 6400;
 
     let mut customDisplay = NV_CUSTOM_DISPLAY {
         version: make_nvapi_version::<NV_CUSTOM_DISPLAY>(1),
