@@ -189,6 +189,7 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
     if (heightBefore == 1440) {
         bunt::println!("{$green}Nothing to fix{/$}");
         log("Nothing to fix".to_string());
+        return;
     }
 
     for i in 0..3 {
