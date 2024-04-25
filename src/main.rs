@@ -205,7 +205,7 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
         };
 
         if i!=2 {
-            sleep(Duration::from_secs(30));
+            sleep(Duration::from_secs(60));
         }
 
         let displayConfigs = get_display_config();
