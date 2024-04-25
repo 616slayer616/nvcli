@@ -184,23 +184,23 @@ pub fn log(e: String) {
 
 pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
     let displayId = displayConfigsBefore[0].target_info[0].display_id;
-    let heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
-
-    if (heightBefore == 1440) {
-        bunt::println!("{$green}Nothing to fix{/$}");
-        log("Nothing to fix".to_string());
-        return;
-    }
+    let mut heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
 
     for i in 0..3 {
+        if heightBefore == 1440 {
+            bunt::println!("{$green}Nothing to fix{/$}");
+            log("Nothing to fix".to_string());
+            return;
+        }
+
         let result = tryCustom(displayId);
         match result {
             Ok(_) => {
-                bunt::println!("{$green}Successfully fixed the shit{/$}");
+                bunt::println!("{$green}tryCustom successful, attempt {}{/$}", i+1);
                 log(format!("tryCustom successful, attempt {}", i+1));
             },
             Err(e) => {
-                bunt::println!("{$red}Failed to fix the shit: {}{/$}", e);
+                bunt::println!("{$red}tryCustom failed: {}, attempt {}{/$}", e, i+1);
                 log(format!("tryCustom failed: {}, attempt {}", e, i+1));
             }
         };
@@ -214,10 +214,14 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
             Ok(configs) => {
                 let height = configs[0].source_mode_info.resolution.height;
                 let width = configs[0].source_mode_info.resolution.width;
-                log(format!("Retrieved resolution: {}x{}, attempt {}", width, height, i+1));
+                let refreshRate = configs[0].target_info[0].details.timing.etc.rr;
+                bunt::println!("{$green}Retrieved resolution: {}x{} @{}, attempt {}{/$}", width, height, refreshRate, i+1);
+                log(format!("Retrieved resolution: {}x{} @{}, attempt {}", width, height, refreshRate, i+1));
+                heightBefore = height;
             },
             Err(e) => {
-                log(format!("Failed to get current display config {}", e));
+                bunt::println!("{$red}Failed to get current display config {}, attempt {}{/$}", e, i+1);
+                log(format!("Failed to get current display config {}, attempt {}", e, i+1));
             }
         };
     }
