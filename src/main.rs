@@ -186,7 +186,7 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
     let displayId = displayConfigsBefore[0].target_info[0].display_id;
     let heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
 
-    if (heightBefore == 1080) {
+    if (heightBefore == 1440) {
         bunt::println!("{$green}Nothing to fix{/$}");
         log("Nothing to fix".to_string());
     }
@@ -196,11 +196,11 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
         match result {
             Ok(_) => {
                 bunt::println!("{$green}Successfully fixed the shit{/$}");
-                log(format!("Successfully fixed the shit, attempt {}", i+1));
+                log(format!("tryCustom successful, attempt {}", i+1));
             },
             Err(e) => {
                 bunt::println!("{$red}Failed to fix the shit: {}{/$}", e);
-                log(format!("Failed to fix the shit: {}, attempt {}", e, i+1));
+                log(format!("tryCustom failed: {}, attempt {}", e, i+1));
             }
         };
 
