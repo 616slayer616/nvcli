@@ -196,6 +196,7 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
     };
 
     let mut newTiming: NV_TIMING = Default::default();
+    newTiming.etc.rr = 240;
     unsafe {
         let result = NvAPI_DISP_GetTiming(displayId, addr_of_mut!(timingInput), addr_of_mut!(newTiming));
         if result != _NvAPI_Status_NVAPI_OK {
