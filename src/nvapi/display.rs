@@ -186,22 +186,36 @@ impl From<NV_DISPLAYCONFIG_PATH_INFO> for NvDisplayConfigPathInfo {
 }
 
 pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
+    let mut newTiming: NV_TIMING = Default::default();
+
+    let mut customDisplay = NV_CUSTOM_DISPLAY {
+        version: make_nvapi_version::<NV_CUSTOM_DISPLAY>(1),
+        width: 5120,
+        height: 1440,
+        depth: 32,
+        colorFormat: 21,
+        srcPartition: NV_VIEWPORTF {
+            x: 0.0,
+            y: 0.0,
+            w: 1.0,
+            h: 1.0,
+        },
+        xRatio: 1.0,
+        yRatio: 1.0,
+        timing: newTiming,
+        _bitfield_align_1: [],
+        _bitfield_1: Default::default(),
+        __bindgen_padding_0: [0u8; 3],
+    };
+
     let mut timingInput = NV_TIMING_INPUT {
         version: make_nvapi_version::<NV_TIMING_INPUT>(1),
-        width: 640,
-        height: 480,
-        rr: 60.0,
+        width: 5120,
+        height: 1440,
+        rr: 240.0,
         flag: Default::default(),
         type_: _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_CVT_RB,
     };
-
-    let mut newTiming: NV_TIMING = Default::default();
-    unsafe {
-        let result = NvAPI_DISP_GetTiming(displayId, addr_of_mut!(timingInput), addr_of_mut!(newTiming));
-        if result != _NvAPI_Status_NVAPI_OK {
-            return Err(format!("{} {}", "Error retrieving timing", get_status_message(&result)));
-        }
-    }
 
     newTiming.HVisible =2560;
     newTiming.HBorder =0;
@@ -224,25 +238,12 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
     newTiming.etc.rep = 1;
     newTiming.etc.status = 6400;
 
-    let mut customDisplay = NV_CUSTOM_DISPLAY {
-        version: make_nvapi_version::<NV_CUSTOM_DISPLAY>(1),
-        width: 5120,
-        height: 1440,
-        depth: 32,
-        colorFormat: 21,
-        srcPartition: NV_VIEWPORTF {
-            x: 0.0,
-            y: 0.0,
-            w: 1.0,
-            h: 1.0,
-        },
-        xRatio: 1.0,
-        yRatio: 1.0,
-        timing: newTiming,
-        _bitfield_align_1: [],
-        _bitfield_1: Default::default(),
-        __bindgen_padding_0: [0u8; 3],
-    };
+    unsafe {
+        let result = NvAPI_DISP_GetTiming(displayId, addr_of_mut!(timingInput), addr_of_mut!(customDisplay.timing));
+        if result != _NvAPI_Status_NVAPI_OK {
+            return Err(format!("{} {}", "Error retrieving timing", get_status_message(&result)));
+        }
+    }
 
     unsafe {
         let result = NvAPI_DISP_TryCustomDisplay(addr_of_mut!(displayId), 1, addr_of_mut!(customDisplay));
