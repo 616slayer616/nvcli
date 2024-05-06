@@ -185,13 +185,11 @@ pub fn log(e: String) {
 pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
     let  width= 3840;
     let  height= 1080;
-    //let  width= 5120;
-    //let  height= 1440;
 
     let displayId = displayConfigsBefore[0].target_info[0].display_id;
     let mut heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
 
-    if heightBefore == height {
+    if heightBefore == height || heightBefore == 1440 {
         bunt::println!("{$green}Nothing to fix{/$}");
         log("Nothing to fix".to_string());
         return;
@@ -222,7 +220,7 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
                 bunt::println!("{$green}Retrieved resolution: {}x{} @{}, attempt {}{/$}", newWidth, newHeight, refreshRate, i+1);
                 log(format!("Retrieved resolution: {}x{} @{}, attempt {}", newWidth, newHeight, refreshRate, i+1));
                 heightBefore = newWidth;
-                if newHeight == height {
+                if newHeight == height || newHeight == 1440 {
                     bunt::println!("{$green}Nothing to fix{/$}");
                     log("Done".to_string());
                     return;
