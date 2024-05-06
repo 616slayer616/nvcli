@@ -185,13 +185,13 @@ impl From<NV_DISPLAYCONFIG_PATH_INFO> for NvDisplayConfigPathInfo {
     }
 }
 
-pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
+pub fn tryCustom(mut displayId: NvU32, width: u32, height: u32) -> Result<()> {
     let mut newTiming: NV_TIMING = Default::default();
 
     let mut customDisplay = NV_CUSTOM_DISPLAY {
         version: make_nvapi_version::<NV_CUSTOM_DISPLAY>(1),
-        width: 5120,
-        height: 1440,
+        width: width,
+        height: height,
         depth: 32,
         colorFormat: 21,
         srcPartition: NV_VIEWPORTF {
@@ -210,13 +210,14 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
 
     let mut timingInput = NV_TIMING_INPUT {
         version: make_nvapi_version::<NV_TIMING_INPUT>(1),
-        width: 5120,
-        height: 1440,
+        width: width,
+        height: height,
         rr: 240.0,
         flag: Default::default(),
         type_: _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_CVT_RB,
     };
 
+    /*
     newTiming.HVisible =2560;
     newTiming.HBorder =0;
     newTiming.HFrontPorch =64;
@@ -237,6 +238,7 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
     newTiming.etc.aspect = 65537;
     newTiming.etc.rep = 1;
     newTiming.etc.status = 6400;
+     */
 
     unsafe {
         let result = NvAPI_DISP_GetTiming(displayId, addr_of_mut!(timingInput), addr_of_mut!(customDisplay.timing));

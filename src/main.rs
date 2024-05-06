@@ -183,17 +183,22 @@ pub fn log(e: String) {
 }
 
 pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
+    let  width= 3840;
+    let  height= 1080;
+    //let  width= 5120;
+    //let  height= 1440;
+
     let displayId = displayConfigsBefore[0].target_info[0].display_id;
     let mut heightBefore = displayConfigsBefore[0].source_mode_info.resolution.height;
 
-    if heightBefore == 1440 {
+    if heightBefore == height {
         bunt::println!("{$green}Nothing to fix{/$}");
         log("Nothing to fix".to_string());
         return;
     }
     for i in 0..3 {
 
-        let result = tryCustom(displayId);
+        let result = tryCustom(displayId, width, height);
         match result {
             Ok(_) => {
                 bunt::println!("{$green}tryCustom successful, attempt {}{/$}", i+1);
@@ -211,13 +216,13 @@ pub fn fixmyshit(displayConfigsBefore: Vec<NvDisplayConfigPathInfo>) {
         let displayConfigs = get_display_config();
         match displayConfigs {
             Ok(configs) => {
-                let height = configs[0].source_mode_info.resolution.height;
-                let width = configs[0].source_mode_info.resolution.width;
+                let newHeight = configs[0].source_mode_info.resolution.height;
+                let newWidth = configs[0].source_mode_info.resolution.width;
                 let refreshRate = configs[0].target_info[0].details.timing.etc.rr;
-                bunt::println!("{$green}Retrieved resolution: {}x{} @{}, attempt {}{/$}", width, height, refreshRate, i+1);
-                log(format!("Retrieved resolution: {}x{} @{}, attempt {}", width, height, refreshRate, i+1));
-                heightBefore = height;
-                if heightBefore == 1440 {
+                bunt::println!("{$green}Retrieved resolution: {}x{} @{}, attempt {}{/$}", newWidth, newHeight, refreshRate, i+1);
+                log(format!("Retrieved resolution: {}x{} @{}, attempt {}", newWidth, newHeight, refreshRate, i+1));
+                heightBefore = newWidth;
+                if newHeight == height {
                     bunt::println!("{$green}Nothing to fix{/$}");
                     log("Done".to_string());
                     return;
