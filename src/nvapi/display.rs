@@ -1,7 +1,8 @@
+use std::any::Any;
 use std::default::Default;
 use std::ptr::{addr_of_mut};
 use crate::cli::error::Result;
-use nvapi_sys_new::{make_nvapi_version, NvAPI_DISP_GetDisplayConfig, NvAPI_DISP_SetDisplayConfig, _NvAPI_Status_NVAPI_OK, NV_DISPLAYCONFIG_PATH_ADVANCED_TARGET_INFO, NV_DISPLAYCONFIG_PATH_INFO, NV_DISPLAYCONFIG_PATH_TARGET_INFO_V2, NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1, NvAPI_DISP_TryCustomDisplay, NV_CUSTOM_DISPLAY, NV_TIMING, NV_VIEWPORTF, NV_TIMING_INPUT, _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_AUTO, NvAPI_DISP_GetTiming, NvU32};
+use nvapi_sys_new::{make_nvapi_version, NvAPI_DISP_GetDisplayConfig, NvAPI_DISP_SetDisplayConfig, _NvAPI_Status_NVAPI_OK, NV_DISPLAYCONFIG_PATH_ADVANCED_TARGET_INFO, NV_DISPLAYCONFIG_PATH_INFO, NV_DISPLAYCONFIG_PATH_TARGET_INFO_V2, NV_DISPLAYCONFIG_SOURCE_MODE_INFO_V1, NvAPI_DISP_TryCustomDisplay, NV_CUSTOM_DISPLAY, NV_TIMING, NV_VIEWPORTF, NV_TIMING_INPUT, _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_AUTO, NvAPI_DISP_GetTiming, NvU32, _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_CVT_RB};
 
 use super::{general::get_status_message, rotation::Rotation, scaling::Scaling};
 
@@ -191,7 +192,7 @@ pub fn tryCustom(mut displayId: NvU32) -> Result<()> {
         height: 480,
         rr: 60.0,
         flag: Default::default(),
-        type_: _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_AUTO,
+        type_: _NV_TIMING_OVERRIDE_NV_TIMING_OVERRIDE_CVT_RB,
     };
 
     let mut newTiming: NV_TIMING = Default::default();
